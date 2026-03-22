@@ -481,6 +481,9 @@
       <div class="popup-sub">Join 200+ agents already waiting. No spam — just launch day access.</div>
       <form class="popup-form" id="leadForm" autocomplete="on">
         <div class="popup-field">
+          <input type="text" name="name" required placeholder="Your name">
+        </div>
+        <div class="popup-field">
           <input type="email" name="email" required placeholder="your@email.com">
         </div>
         <button type="submit" class="popup-submit" id="submitBtn">Join the Waitlist</button>
@@ -641,7 +644,7 @@ leadForm.addEventListener('submit', async (e) => {
 
   const formData = new FormData(leadForm);
   const data = {
-    name: '',
+    name: formData.get('name'),
     email: formData.get('email'),
     brokerage: '',
     phone: '',
