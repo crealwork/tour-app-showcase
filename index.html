@@ -443,6 +443,33 @@
     50% { box-shadow: 0 4px 24px rgba(138,154,123,0.6); }
   }
 
+  /* ─── Swipe hint ─── */
+  .swipe-hint {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+  }
+  .swipe-hint.hidden { opacity: 0; }
+  .swipe-hint-hand {
+    font-size: 28px;
+    animation: swipeLeft 1.8s ease-in-out infinite;
+  }
+  @keyframes swipeLeft {
+    0%   { transform: translateX(16px); opacity: 0; }
+    20%  { opacity: 1; }
+    60%  { transform: translateX(-24px); opacity: 1; }
+    80%  { opacity: 0; }
+    100% { transform: translateX(-24px); opacity: 0; }
+  }
+  @media (min-width: 768px) {
+    .swipe-hint { display: none; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .carousel { scroll-behavior: auto; }
     .dot, .nav-btn { transition: none; }
@@ -464,6 +491,7 @@
 
 <div class="phone-container">
   <div class="phone-frame">
+    <div class="swipe-hint" id="swipeHint"><span class="swipe-hint-hand">👆</span></div>
     <div class="carousel" id="carousel">
       <div class="carousel-slide"><img src="screen_1.png" alt="Dashboard - Morning Sarah view with scheduled tours" loading="eager"></div>
       <div class="carousel-slide"><img src="screen_2.png" alt="Client Availability Selection with calendar" loading="lazy"></div>
@@ -570,6 +598,10 @@ function goTo(index) {
   slide.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 }
 
+// Hide swipe hint on first scroll
+const swipeHint = document.getElementById('swipeHint');
+let hintHidden = false;
+
 // Detect scroll position
 let scrollTimeout;
 carousel.addEventListener('scroll', () => {
@@ -578,6 +610,10 @@ carousel.addEventListener('scroll', () => {
     const slideWidth = carousel.offsetWidth;
     const scrollLeft = carousel.scrollLeft;
     const index = Math.round(scrollLeft / slideWidth);
+    if (!hintHidden && scrollLeft > 10) {
+      swipeHint.classList.add('hidden');
+      hintHidden = true;
+    }
     if (index >= 0 && index < total && index !== current) {
       updateUI(index);
     }
