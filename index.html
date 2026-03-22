@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Mobile App Showcase</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -277,7 +277,7 @@
     border: 1.5px solid #e0dbd4;
     border-radius: 8px;
     padding: 0 12px;
-    font-size: 13px;
+    font-size: 16px;
     font-family: inherit;
     color: #3d3d3d;
     background: #faf9f7;
@@ -304,6 +304,20 @@
   .popup-submit:hover { background: #7a8a6b; transform: translateY(-1px); }
   .popup-submit:active { transform: translateY(0); }
   .popup-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .popup-submit .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
   .popup-success {
     text-align: center;
     padding: 12px 0;
@@ -362,74 +376,58 @@
     75% { transform: translateY(-3px); }
   }
 
-  /* ─── Share toast ─── */
-  .share-toast {
+  /* ─── Share bubble ─── */
+  .share-bubble {
     position: fixed;
     bottom: 24px;
     right: 24px;
-    background: #fff;
-    border-radius: 14px;
-    padding: 14px 16px;
-    max-width: 260px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.04);
     z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(16px);
     transition: all 0.3s ease;
   }
-  .share-toast.visible {
+  .share-bubble.visible {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
   }
-  .share-toast-close {
-    position: absolute;
-    top: 8px;
-    right: 10px;
+  .share-bubble-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
     border: none;
-    background: none;
-    font-size: 16px;
-    color: #b8b3ac;
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
-  }
-  .share-toast-msg {
-    font-size: 13px;
-    font-weight: 600;
-    color: #3d3d3d;
-    margin-bottom: 10px;
-    padding-right: 16px;
-    line-height: 1.4;
-  }
-  .share-toast-btns {
-    display: flex;
-    gap: 6px;
-  }
-  .share-btn {
-    flex: 1;
-    height: 34px;
-    border: none;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    font-family: inherit;
+    background: #8a9a7b;
+    color: #fff;
+    font-size: 20px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    transition: opacity 0.2s;
+    box-shadow: 0 4px 16px rgba(138,154,123,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: gentlePulse 3s ease infinite;
   }
-  .share-btn:hover { opacity: 0.85; }
-  .share-btn.copy {
-    background: #8a9a7b;
-    color: #fff;
+  .share-bubble-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 24px rgba(138,154,123,0.5);
   }
-  .share-btn.text {
-    background: #e8e4dd;
+  .share-bubble-label {
+    background: #fff;
     color: #3d3d3d;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    white-space: nowrap;
+  }
+  @keyframes gentlePulse {
+    0%, 100% { box-shadow: 0 4px 16px rgba(138,154,123,0.4); }
+    50% { box-shadow: 0 4px 24px rgba(138,154,123,0.6); }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -512,14 +510,10 @@
 <!-- Floating CTA -->
 <button class="floating-cta" id="floatingCta">Get Free Early Access</button>
 
-<!-- Share Toast -->
-<div class="share-toast" id="shareToast">
-  <button class="share-toast-close" id="shareToastClose">&times;</button>
-  <div class="share-toast-msg">Know a fellow agent who'd love this? Share it with them!</div>
-  <div class="share-toast-btns">
-    <button class="share-btn copy" id="shareCopy">Copy Link</button>
-    <button class="share-btn text" id="shareText">Text</button>
-  </div>
+<!-- Share Bubble -->
+<div class="share-bubble" id="shareBubble">
+  <span class="share-bubble-label">Share with a fellow agent</span>
+  <button class="share-bubble-btn" id="shareBubbleBtn" aria-label="Share">&#8599;</button>
 </div>
 
 <script>
@@ -652,7 +646,11 @@ floatingCta.addEventListener('click', () => {
 leadForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   submitBtn.disabled = true;
-  submitBtn.textContent = 'Submitting...';
+  submitBtn.textContent = '';
+  const spinner = document.createElement('span');
+  spinner.className = 'spinner';
+  submitBtn.appendChild(spinner);
+  submitBtn.appendChild(document.createTextNode('Submitting...'));
 
   const formData = new FormData(leadForm);
   const data = {
@@ -677,7 +675,7 @@ leadForm.addEventListener('submit', async (e) => {
     floatingCta.classList.remove('visible');
     setTimeout(() => {
       popupOverlay.classList.remove('visible');
-      setTimeout(() => document.getElementById('shareToast').classList.add('visible'), 600);
+      setTimeout(() => document.getElementById('shareBubble').classList.add('visible'), 600);
     }, 2500);
   } catch (err) {
     submitBtn.disabled = false;
@@ -685,26 +683,24 @@ leadForm.addEventListener('submit', async (e) => {
   }
 });
 
-// ─── Share Toast ───
-const shareToast = document.getElementById('shareToast');
-document.getElementById('shareToastClose').addEventListener('click', () => {
-  shareToast.classList.remove('visible');
-});
+// ─── Share Bubble ───
+const shareBubble = document.getElementById('shareBubble');
 
-document.getElementById('shareCopy').addEventListener('click', () => {
-  navigator.clipboard.writeText(window.location.href).then(() => {
-    const btn = document.getElementById('shareCopy');
-    btn.textContent = 'Copied!';
-    setTimeout(() => { btn.textContent = 'Copy Link'; }, 2000);
-  });
-});
+// Show bubble if already submitted in a previous session
+if (localStorage.getItem('leadSubmitted')) {
+  setTimeout(() => shareBubble.classList.add('visible'), 1000);
+}
 
-document.getElementById('shareText').addEventListener('click', () => {
+document.getElementById('shareBubbleBtn').addEventListener('click', () => {
   const msg = 'Check out this AI-powered buyer tour scheduling app for realtors! ' + window.location.href;
   if (navigator.share) {
     navigator.share({ title: 'Buyer Tour Scheduling App', text: msg, url: window.location.href });
   } else {
-    window.open('sms:?body=' + encodeURIComponent(msg), '_blank');
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const label = shareBubble.querySelector('.share-bubble-label');
+      label.textContent = 'Link copied!';
+      setTimeout(() => { label.textContent = 'Share with a fellow agent'; }, 2000);
+    });
   }
 });
 
