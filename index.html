@@ -513,6 +513,10 @@
   <span class="key">←</span> <span class="key">→</span> arrow keys &nbsp;·&nbsp; swipe on mobile
 </div>
 
+<div style="text-align:center; padding: 0 24px 32px;">
+  <button id="bottomCta" style="background:none; border:none; color:#8a9a7b; font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Claim Free Access</button>
+</div>
+
 <!-- Lead Capture Popup -->
 <div class="popup-overlay" id="popupOverlay">
   <div class="popup-card">
@@ -741,6 +745,13 @@ document.getElementById('shareBubbleBtn').addEventListener('click', () => {
       label.textContent = 'Link copied!';
       setTimeout(() => { label.textContent = 'Share with a fellow agent'; }, 2000);
     });
+  }
+});
+
+// Bottom CTA
+document.getElementById('bottomCta').addEventListener('click', () => {
+  if (!localStorage.getItem('leadSubmitted')) {
+    popupOverlay.classList.add('visible');
   }
 });
 
