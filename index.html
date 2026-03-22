@@ -554,7 +554,7 @@ screens.forEach((_, i) => {
 function updateUI(index) {
   current = index;
   titleEl.textContent = screens[index].title;
-  subtitleEl.textContent = `Screen ${index + 1} of ${total} — ${screens[index].desc}`;
+  subtitleEl.textContent = screens[index].desc;
 
   document.querySelectorAll('.dot').forEach((d, i) => {
     d.classList.toggle('active', i === index);
