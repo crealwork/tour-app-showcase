@@ -217,7 +217,7 @@
     background: #fff;
     border-radius: 16px;
     width: 100%;
-    max-width: 340px;
+    max-width: 320px;
     padding: 24px 20px;
     position: relative;
     transform: scale(0.95);
@@ -477,38 +477,25 @@
   <div class="popup-card">
     <button class="popup-close" id="popupClose" aria-label="Close">&times;</button>
     <div id="popupForm">
-      <div class="popup-title">Sign Up Today for<br>Free Early Access</div>
-      <div class="popup-sub">Be among the first realtors to use AI-powered tour scheduling.</div>
+      <div class="popup-title">Get on the waitlist</div>
+      <div class="popup-sub">Join 200+ agents already waiting. No spam — just launch day access.</div>
       <form class="popup-form" id="leadForm" autocomplete="on">
         <div class="popup-field">
-          <label>Name</label>
-          <input type="text" name="name" required placeholder="Jane Smith">
+          <input type="email" name="email" required placeholder="your@email.com">
         </div>
-        <div class="popup-field">
-          <label>Email</label>
-          <input type="email" name="email" required placeholder="jane@realty.com">
-        </div>
-        <div class="popup-field">
-          <label>Brokerage</label>
-          <input type="text" name="brokerage" required placeholder="Keller Williams">
-        </div>
-        <div class="popup-field">
-          <label>Phone <span>(Optional)</span></label>
-          <input type="tel" name="phone" placeholder="(555) 123-4567">
-        </div>
-        <button type="submit" class="popup-submit" id="submitBtn">Get Early Access</button>
+        <button type="submit" class="popup-submit" id="submitBtn">Join the Waitlist</button>
       </form>
     </div>
     <div class="popup-success" id="popupSuccess" style="display:none">
       <div class="check">&#10003;</div>
-      <h3>Thank you!</h3>
-      <p>We'll be in touch with early access details.</p>
+      <h3>You're on the list!</h3>
+      <p>We'll notify you on launch day.</p>
     </div>
   </div>
 </div>
 
 <!-- Floating CTA -->
-<button class="floating-cta" id="floatingCta">Get Free Early Access</button>
+<button class="floating-cta" id="floatingCta">Join the Waitlist</button>
 
 <!-- Share Bubble -->
 <div class="share-bubble" id="shareBubble">
@@ -654,10 +641,10 @@ leadForm.addEventListener('submit', async (e) => {
 
   const formData = new FormData(leadForm);
   const data = {
-    name: formData.get('name'),
+    name: '',
     email: formData.get('email'),
-    brokerage: formData.get('brokerage'),
-    phone: formData.get('phone') || '',
+    brokerage: '',
+    phone: '',
     timestamp: new Date().toISOString()
   };
 
