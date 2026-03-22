@@ -362,6 +362,76 @@
     75% { transform: translateY(-3px); }
   }
 
+  /* ─── Share toast ─── */
+  .share-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px 16px;
+    max-width: 260px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.04);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px);
+    transition: all 0.3s ease;
+  }
+  .share-toast.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .share-toast-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    border: none;
+    background: none;
+    font-size: 16px;
+    color: #b8b3ac;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+  }
+  .share-toast-msg {
+    font-size: 13px;
+    font-weight: 600;
+    color: #3d3d3d;
+    margin-bottom: 10px;
+    padding-right: 16px;
+    line-height: 1.4;
+  }
+  .share-toast-btns {
+    display: flex;
+    gap: 6px;
+  }
+  .share-btn {
+    flex: 1;
+    height: 34px;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: opacity 0.2s;
+  }
+  .share-btn:hover { opacity: 0.85; }
+  .share-btn.copy {
+    background: #8a9a7b;
+    color: #fff;
+  }
+  .share-btn.text {
+    background: #e8e4dd;
+    color: #3d3d3d;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .carousel { scroll-behavior: auto; }
     .dot, .nav-btn { transition: none; }
@@ -441,6 +511,16 @@
 
 <!-- Floating CTA -->
 <button class="floating-cta" id="floatingCta">Get Free Early Access</button>
+
+<!-- Share Toast -->
+<div class="share-toast" id="shareToast">
+  <button class="share-toast-close" id="shareToastClose">&times;</button>
+  <div class="share-toast-msg">Know a fellow agent who'd love this? Share it with them!</div>
+  <div class="share-toast-btns">
+    <button class="share-btn copy" id="shareCopy">Copy Link</button>
+    <button class="share-btn text" id="shareText">Text</button>
+  </div>
+</div>
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyu4id6TES0ToWbKKdN_5-opjLtYhfQv7EaG0UJn42TTp4xM7fKVh5p3uPkT5ZVPx2aog/exec';
@@ -595,10 +675,36 @@ leadForm.addEventListener('submit', async (e) => {
     popupFormDiv.style.display = 'none';
     popupSuccess.style.display = 'block';
     floatingCta.classList.remove('visible');
-    setTimeout(() => popupOverlay.classList.remove('visible'), 2500);
+    setTimeout(() => {
+      popupOverlay.classList.remove('visible');
+      setTimeout(() => document.getElementById('shareToast').classList.add('visible'), 600);
+    }, 2500);
   } catch (err) {
     submitBtn.disabled = false;
     submitBtn.textContent = 'Try Again';
+  }
+});
+
+// ─── Share Toast ───
+const shareToast = document.getElementById('shareToast');
+document.getElementById('shareToastClose').addEventListener('click', () => {
+  shareToast.classList.remove('visible');
+});
+
+document.getElementById('shareCopy').addEventListener('click', () => {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.getElementById('shareCopy');
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy Link'; }, 2000);
+  });
+});
+
+document.getElementById('shareText').addEventListener('click', () => {
+  const msg = 'Check out this AI-powered buyer tour scheduling app for realtors! ' + window.location.href;
+  if (navigator.share) {
+    navigator.share({ title: 'Buyer Tour Scheduling App', text: msg, url: window.location.href });
+  } else {
+    window.open('sms:?body=' + encodeURIComponent(msg), '_blank');
   }
 });
 
