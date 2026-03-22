@@ -87,8 +87,9 @@
   }
   .phone-frame {
     position: relative;
-    width: 340px;
-    max-width: 85vw;
+    width: 300px;
+    max-width: 75vw;
+    max-height: 60vh;
     border-radius: 24px;
     background: #fff;
     overflow: hidden;
@@ -102,10 +103,12 @@
   .carousel {
     display: flex;
     overflow-x: auto;
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    height: 100%;
   }
   .carousel::-webkit-scrollbar { display: none; }
 
@@ -127,11 +130,11 @@
     display: flex;
     justify-content: center;
     gap: 16px;
-    padding: 24px;
+    padding: 16px;
   }
   .nav-btn {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     border: 2px solid #d4cfc8;
     background: #fff;
@@ -164,7 +167,7 @@
   /* ─── Keyboard hint ─── */
   .keyboard-hint {
     text-align: center;
-    padding: 0 24px 40px;
+    padding: 0 24px 24px;
     font-size: 12px;
     color: #b8b3ac;
   }
@@ -181,7 +184,7 @@
   /* ─── Responsive ─── */
   @media (min-width: 768px) {
     .header h1 { font-size: 34px; }
-    .phone-frame { width: 380px; border-radius: 28px; }
+    .phone-frame { width: 360px; max-width: 85vw; max-height: 70vh; border-radius: 28px; }
     .screen-title { font-size: 20px; }
   }
 
