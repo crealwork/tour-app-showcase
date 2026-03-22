@@ -613,7 +613,7 @@ function showPopup() {
 
 function hidePopup() {
   popupOverlay.classList.remove('visible');
-  if (!alreadySubmitted) {
+  if (!localStorage.getItem('leadSubmitted')) {
     setTimeout(() => floatingCta.classList.add('visible'), 400);
   }
 }
@@ -686,8 +686,9 @@ leadForm.addEventListener('submit', async (e) => {
 // ─── Share Bubble ───
 const shareBubble = document.getElementById('shareBubble');
 
-// Show bubble if already submitted in a previous session
+// If already submitted: hide CTA, show share bubble only
 if (localStorage.getItem('leadSubmitted')) {
+  floatingCta.classList.remove('visible');
   setTimeout(() => shareBubble.classList.add('visible'), 1000);
 }
 
